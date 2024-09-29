@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 const getBlwn = (req, res) => {
-  pool.query("SELECT nim,namamhs,kdjur FROM mhs", (error, results) => {
+  pool.query("SELECT * FROM divisi", (error, results) => {
     if (error) {
       throw error;
     }
