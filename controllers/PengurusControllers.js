@@ -1,6 +1,5 @@
 const PengurusModels = require("../models/PengurusModels");
-const { pengurus } = require("../prisma/client");
-//==
+
 class PengurusControllers {
   static async renderHome(req, res) {
     res.render("home");
