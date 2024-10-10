@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// Enum untuk role
+enum Role {
+  public
+  admin
+}
+
+// Model untuk tabel users
+model User {
+  id           Int              @id @default(autoincrement()) // Kolom id sebagai primary key
+  nama         String           @db.VarChar(100)              // Kolom nama
+  prodi        String?          @db.VarChar(100)              // Kolom prodi (opsional)
+  fakultas     String?          @db.VarChar(100)              // Kolom fakultas (opsional)
+  email        String           @unique @db.VarChar(100)     // Kolom email (harus unik)
+  role         Role             @default(public)              // Kolom role dengan default public
+  
+  anggotaBlwn  AnggotaBlwn[]    @relation("UserAnggota")    // Relasi ke anggota_blwn
+  pengurus     Pengurus[]        @relation("UserPengurus")   // Relasi ke pengurus
+}
+
+// Model untuk tabel divisi
+model Divisi {
+  id            Int              @id @default(autoincrement()) // Kolom id sebagai primary key
+  divisi        String           @db.VarChar(100)              // Kolom divisi
+
+  anggotaBlwn   AnggotaBlwn[]    @relation("DivisiAnggota")  // Relasi ke anggota_blwn
+  pengurus      Pengurus[]        @relation("DivisiPengurus") // Relasi ke pengurus
+}
+
+// Model untuk tabel angkatan
+model Angkatan {
+  id            Int              @id @default(autoincrement()) // Kolom id sebagai primary key
+  angkatan      Int               // Kolom angkatan
+  
+  anggotaBlwn   AnggotaBlwn[]    @relation("AngkatanAnggota") // Relasi ke anggota_blwn
+}
+
+// Model untuk tabel divisi_organisasi
+model DivisiOrganisasi {
+  id            Int              @id @default(autoincrement()) // Kolom id sebagai primary key
+  divisi        String           @db.VarChar(100)              // Kolom divisi
+
+  anggotaBlwn   AnggotaBlwn[]    @relation("DivisiOrganisasiAnggota") // Relasi ke anggota_blwn
+  pengurus      Pengurus[]        @relation("DivisiOrganisasiPengurus") // Relasi ke pengurus
+}
+
+// Model untuk tabel anggota_blwn
+model AnggotaBlwn {
+  id                     Int              @id @default(autoincrement()) // Kolom id sebagai primary key
+  nama                   String           @db.VarChar(100)               // Kolom nama
+  angkatanId             Int              // Kolom angkatan_id
+  divisiId               Int              // Kolom divisi_id
+  divisiOrganisasiId     Int              // Kolom divisi_organisasi_id
+  
+  angkatan               Angkatan         @relation(fields: [angkatanId], references: [id], name: "AngkatanAnggota") // Relasi ke tabel angkatan
+  divisi                 Divisi           @relation(fields: [divisiId], references: [id], name: "DivisiAnggota") // Relasi ke tabel divisi
+  divisiOrganisasi       DivisiOrganisasi @relation(fields: [divisiOrganisasiId], references: [id], name: "DivisiOrganisasiAnggota") // Relasi ke tabel divisi_organisasi
+  user                   User             @relation(fields: [userId], references: [id], name: "UserAnggota") // Relasi ke pengguna (User)
+  userId                 Int              // Kolom untuk menyimpan id pengguna
+}
+
+// Model untuk tabel pengurus
+model Pengurus {
+  id                     Int              @id @default(autoincrement()) // Kolom id sebagai primary key
+  nama                   String           @db.VarChar(100)               // Kolom nama
+  divisiOrganisasiId     Int              // Kolom divisi_organisasi_id
+  divisiId               Int              // Kolom divisi_id
+  
+  divisiOrganisasi       DivisiOrganisasi @relation(fields: [divisiOrganisasiId], references: [id], name: "DivisiOrganisasiPengurus") // Relasi ke tabel divisi_organisasi
+  divisi                 Divisi           @relation(fields: [divisiId], references: [id], name: "DivisiPengurus") // Relasi ke tabel divisi
+  user                   User             @relation(fields: [userId], references: [id], name: "UserPengurus") // Relasi ke pengguna (User)
+  userId                 Int              // Kolom untuk menyimpan id pengguna
+}
