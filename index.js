@@ -11,7 +11,7 @@ const port = config.port;
 
 // Middleware untuk parsing JSON dan URL-encoded data
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routing
 app.use("/", dataRoutes);
@@ -19,4 +19,4 @@ app.use("/", dataRoutes);
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-//=======================
+
