@@ -1,4 +1,4 @@
-const PengurusModels = require("../models/PengurusModels");
+const PengurusModels = require("../models/pengurusModels");
 
 class PengurusControllers {
   static async renderHome(req, res) {
