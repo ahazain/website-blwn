@@ -33,8 +33,10 @@ class Anggota {
     });
   }
   static async deleteAnggota(id) {
-    return await Promise.anggotaBlwn.delete({
+    return await prisma.anggotaBlwn.delete({
       where: { id: id },
     });
   }
 }
+
+module.exports = Anggota;
